@@ -1,0 +1,96 @@
+create database test;
+
+use test;
+
+CREATE TABLE Employee (
+    employee_id INT PRIMARY KEY,
+    employee_name VARCHAR(100),
+    salary DECIMAL(10, 2),
+    department_name VARCHAR(50)
+);
+
+INSERT INTO Employee (employee_id, employee_name, salary, department_name) VALUES
+(1, 'John Doe', 50000.00, 'HR'),
+(2, 'Jane Smith', 75000.00, 'Engineering'),
+(3, 'Mark Johnson', 62000.00, 'Sales'),
+(4, 'Emily Davis', 85000.00, 'Engineering'),
+(5, 'Michael Brown', 45000.00, 'HR');
+
+
+-- name of employee with max salary
+select max(salary) from Employee;
+select employee_name from Employee where salary=(select max(salary) from Employee);
+
+
+-- find second highest salary
+select max(salary) from Employee where salary NOT IN(select max(salary) from Employee);
+
+-- then name of person with 2d highest salary
+select employee_name from Employee where salary=(select max(salary) from Employee where salary NOT IN(select max(salary) from Employee));
+
+
+-- display department name along with num of employee wokring in that
+select department_name ,count(employee_id) from Employee group by department_name;
+
+-- display dept name where emp are less than 2
+select department_name ,count(employee_id) from Employee group by department_name having count(employee_id) < 2; 
+
+
+
+
+
+
+
+
+
+
+corelated
+
+create database test;
+use test;
+
+CREATE TABLE Employee (
+    eid INT PRIMARY KEY,
+    ename VARCHAR(100),
+    address VARCHAR(255)
+);
+
+CREATE TABLE Project (
+    pid INT PRIMARY KEY,
+    pname VARCHAR(100),
+    location VARCHAR(255),
+    eid INT,
+    FOREIGN KEY (eid) REFERENCES Employee(eid)
+);
+
+INSERT INTO Employee (eid, ename, address) VALUES
+(1, 'Alice', '123 Maple Street'),
+(2, 'Bob', '456 Oak Avenue'),
+(3, 'Charlie', '789 Pine Lane'),
+(4, 'Diana', '321 Cedar Boulevard'),
+(5, 'Eve', '654 Birch Road'),
+(6, 'Frank', '987 Elm Street');
+
+INSERT INTO Project (pid, pname, location, eid) VALUES
+(101, 'Project Alpha', 'New York', 1),
+(102, 'Project Beta', 'Los Angeles', 2),
+(103, 'Project Gamma', 'Chicago', 3),
+(104, 'Project Delta', 'San Francisco', 4),
+(105, 'Project Epsilon', 'Seattle', 5),
+(106, 'Project Zeta', 'Houston', 6);
+
+-- find detail of employee who is working on at least one project
+ -- using IN 
+ select * from Employee where eid IN(select Project.eid from Project);
+ 
+ -- using exists
+SELECT * 
+FROM Employee 
+WHERE EXISTS (
+    SELECT eid 
+    FROM Project 
+    WHERE Project.eid = Employee.eid
+);
+
+
+

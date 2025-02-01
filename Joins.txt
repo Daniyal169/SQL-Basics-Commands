@@ -1,0 +1,100 @@
+-- Create Database
+CREATE DATABASE joins;
+
+-- Use Database
+USE joins;
+
+drop database joins;
+
+-- Create Tables
+CREATE TABLE customer (
+    c_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100)
+);
+
+CREATE TABLE orders (
+    o_id INT PRIMARY KEY,
+    order_date DATE,
+    o_custId INT,
+    product_id INT,
+    FOREIGN KEY (o_custId) REFERENCES customer(c_id)
+);
+
+CREATE TABLE products (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(100)
+);
+
+-- Insert Data into Customer Table
+INSERT INTO customer (c_id, name, email) 
+VALUES
+(1, 'John Doe', 'john@example.com'),
+(2, 'Alice Smith', 'alice@example.com'),
+(3, 'Bob Johnson', 'bob@example.com'),
+(4, 'Pakistan', 'pak@example.com'),
+(5, 'Virat Kohli', 'virat@example.com'),
+(6, 'Babar Azam', 'babar@example.com');
+
+-- Insert Data into Products Table
+INSERT INTO products (product_id, product_name)
+VALUES
+(1, 'Laptop'),
+(2, 'Smartphone'),
+(3, 'Headphones');
+
+-- Insert Data into Orders Table
+INSERT INTO orders (o_id, order_date, o_custId, product_id) 
+VALUES
+(101, '2024-12-01', 1, 1),
+(102, '2024-12-02', 2, 2),
+(103, '2024-12-03', 3, 3),
+(104, '2024-12-04', 2, 1),
+(105, '2024-12-20', NULL, NULL),
+(106, '2024-12-23', NULL, NULL);
+
+-- INNER JOIN with 3 Tables
+SELECT 
+    c.name , 
+    o.order_date , 
+    p.product_name 
+FROM 
+    customer AS c
+INNER JOIN 
+    orders AS o
+ON 
+    c.c_id = o.o_custId
+INNER JOIN 
+    products AS p
+ON 
+    o.product_id = p.product_id;
+
+
+-- Inner Join
+SELECT c.*, o.*
+FROM customer AS c
+INNER JOIN orders AS o
+ON c.c_id = o.o_custId;
+
+-- Left Join
+SELECT c.*, o.*
+FROM customer AS c
+LEFT JOIN orders AS o
+ON c.c_id = o.o_custId;
+
+-- Right Join
+SELECT c.*, o.*
+FROM customer AS c
+RIGHT JOIN orders AS o
+ON c.c_id = o.o_custId;
+
+-- Full Join
+SELECT c.*, o.*
+FROM customer AS c
+LEFT JOIN orders AS o
+ON c.c_id = o.o_custId
+UNION
+SELECT c.*, o.*
+FROM customer AS c
+RIGHT JOIN orders AS o
+ON c.c_id = o.o_custId;

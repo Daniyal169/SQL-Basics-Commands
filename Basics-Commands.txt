@@ -1,0 +1,167 @@
+-- Creating Database
+-- While creating db we can also apply check like IF NOT EXIST
+CREATE DATABASE Temp;
+
+use Temp;
+
+drop database Temp;
+
+-- Creating Table
+CREATE TABLE Student(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    firstName varchar(255),
+    lastName varchar(255),
+    marks INT DEFAULT 0,
+    age INT
+    -- we can also provide constrains to check like age should be greater than 18
+);
+-- adding new column GPA to Student table
+ALTER TABLE Student ADD GPA FLOAT DEFAULT 0;
+
+-- Changing marks int to float
+ALTER TABLE Student MODIFY marks FLOAT DEFAULT 0;
+
+-- describing table datatypes
+DESCRIBE Student;
+
+-- renaming column name GPA to sGPA
+ALTER TABLE Student CHANGE GPA sGPA FLOAT DEFAULT 0;
+
+-- deleting column
+ALTER TABLE Student DROP COLUMN sGPA;
+
+-- renaming table
+ALTER TABLE Student RENAME TO StudentDetail;
+
+
+DROP TABLE Student;
+
+
+SELECT * FROM Student;
+
+-- Adding multiple Tuples
+INSERT INTO Student (firstName,lastName,marks,age)
+VALUES ("Danish","Sohail",100,19),
+("Babar","Azam",30,29),
+("Daniyal", "Sohail",60, 22),
+("Virat", "Kohli", 69,29),
+("Mitchel", "Starc",3, 22);
+
+SELECT * FROM Student;
+
+SELECT * FROM Student WHERE age=22;
+
+
+SET SQL_SAFE_UPDATES = 0;
+
+-- updating values in tuple
+UPDATE Student SET marks=169 where firstName ="Daniyal";
+
+-- update mutiple rows 
+UPDATE Student SET sGPA=4;
+
+-- DELETING 
+DELETE FROM Student;
+
+DELETE FROM Student WHERE age =19;  -- can not del bcz competition have forign key of this tuple so we will add on delete cascade
+
+-- replacing data 
+-- wehn data is already present to that primary key it replace the tuple
+REPLACE INTO Student (id,marks)
+values (5,5);
+
+-- when data not present corresposing to that primary key it act as insert
+REPLACE INTO Student (id,firstName,lastName,marks,age)
+values (6,"Haris","Rauf",97,19);
+
+-- creatinf another table have foreign key of student 
+CREATE TABLE ProgrammingCompetition(
+    competition_id INT PRIMARY KEY AUTO_INCREMENT,
+    studentId INT, 
+    language VARCHAR(50),  
+    startDate DATETIME,
+    FOREIGN KEY (studentId) REFERENCES Student(id) ON DELETE CASCADE
+);
+
+
+-- to delete table
+DROP TABLE ProgrammingCompetition;
+
+
+INSERT INTO ProgrammingCompetition (studentId, language, startDate)
+VALUES 
+(1, 'JavaScript', '2024-11-24 10:00:00'),
+(2, 'Python', '2024-11-24 11:00:00'),
+(3, 'C++', '2024-11-24 12:00:00'),
+(4, 'C++', '2024-11-24 12:00:00'),
+(5, 'C++', '2024-11-24 12:00:00');
+
+
+SELECT * FROM ProgrammingCompetition;
+
+SELECT language from ProgrammingCompetition;
+
+-- using select with from
+SELECT 20+26;
+SELECT now();
+
+
+-- where
+SELECT * FROM ProgrammingCompetition where language ="C++";
+
+-- between
+SELECT * FROM Student WHERE age BETWEEN 15 AND 25; 
+
+-- reduce OR staements using IN
+SELECT * FROM ProgrammingCompetition where language ="C++" OR language ="JavaScript" OR language ="Python";
+
+SELECT * FROM ProgrammingCompetition where language IN ("C++", "Python", "JavaScript");
+
+-- NOT
+SELECT * FROM ProgrammingCompetition where language NOT IN ("JavaScript");
+
+-- NULL
+SELECT * FROM ProgrammingCompetition where language is NULL;
+
+
+-- WILD CARDS 
+
+
+-- % wildcard represents zero, one, or multiple characters in a string
+SELECT * FROM Student WHERE firstName LIKE 'Dan%';
+-- This query will match any student whose first name starts with 'Dan'
+
+SELECT * FROM Student WHERE firstName LIKE '%r';
+-- This will match any student whose first name ends with 'r' 
+
+SELECT * FROM Student WHERE firstName LIKE '%a%';
+
+-- _ wildcard represents a single character.
+SELECT * FROM Student WHERE firstName LIKE '_aniyal';
+
+
+-- SOrting 
+SELECT * FROM Student ORDER BY age;
+SELECT * FROM Student ORDER BY age DESC;
+
+
+-- to find distinct values
+SELECT DISTINCT age FROM Student;
+
+-- to find how many people are of particular age
+-- Grouping
+
+SELECT age from Student group by age; -- we didnot apply any aggregation so its output is same like distinct
+
+SELECT age, COUNT(age) from Student group by age; 
+
+-- finding avg age
+SELECT age , AVG(marks) from Student group by age;
+
+-- min
+SELECT age , MIN(marks) from Student group by age; 
+SELECT age , SUM(marks) from Student group by age; 
+
+-- Group by having
+SELECT age, COUNT(age) from Student group by age HAVING COUNT(age) > 1; 
+
